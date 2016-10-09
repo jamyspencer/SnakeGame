@@ -4,7 +4,11 @@ import java.util.Scanner;
 import java.util.Random;
 import static java.lang.Math.abs;
 
+
+
 public class Snake{
+
+	static int RIGHT = 0,LEFT = 2, UP = 3, DOWN = 1;
 
 	public static void main(String[] args) {
 		int length = 1,
@@ -76,8 +80,9 @@ public class Snake{
 }
 //double linked list snake object
 class SnakeObj{
+	static int RIGHT = 0,LEFT = 2, UP = 3, DOWN = 1;
 	public int segments = 1;
-	public int direction = 1;//0=right, 1=down , 2=left, 3=up
+	public int direction = RIGHT;//0=right, 1=down , 2=left, 3=up
 	Segment head;
 	Segment tail;
 
@@ -106,46 +111,46 @@ class SnakeObj{
 		boolean set = false;
 
 		if(head == tail){
-			if(direction == 0 && dirs[2]){
+			if(direction == RIGHT && dirs[LEFT]){
 				set = true;
 				x--;
 			}
-			else if(direction == 1 && dirs[3]){
+			else if(direction == DOWN && dirs[3]){
 				set = true;
 				y++;
 			}
-			else if(direction == 2 && dirs[0]){
+			else if(direction == LEFT && dirs[RIGHT]){
 				set = true;
 				x++;
 			}
-			else if(direction == 3 && dirs[1]){
+			else if(direction == UP && dirs[DOWN]){
 				set = true;
 				y--;
 			}
 		}
 		else{
-			if(tail.last.xpos > x && dirs[2]){
+			if(tail.last.xpos > x && dirs[LEFT]){
 				set = true;
 				x--;
 			}
-			else if(tail.last.xpos < x && dirs[0]){
+			else if(tail.last.xpos < x && dirs[RIGHT]){
 				set = true;
 				x++;
 			}
-			else if(tail.last.ypos < y && dirs[3]){
+			else if(tail.last.ypos < y && dirs[UP]){
 				set = true;
 				y++;
 			}
-			else if(tail.last.ypos > y && dirs[1]){
+			else if(tail.last.ypos > y && dirs[DOWN]){
 				set = true;
 				y--;
 			}
 		}
 		if(!set){
-			if(dirs[0]) x++;
-			else if(dirs[1]) y--;
-			else if(dirs[2]) x--;
-			else if(dirs[3]) y++;
+			if(dirs[RIGHT]) x++;
+			else if(dirs[DOWN]) y--;
+			else if(dirs[LEFT]) x--;
+			else if(dirs[UP]) y++;
 		}
 		tail.next = new Segment(x,y);
 		tail.next.last = tail;
@@ -159,10 +164,10 @@ class SnakeObj{
 
 		while(temp != null){
 			if(temp == head){
-				if(direction == 0) temp.xpos++;
-				else if(direction == 1) temp.ypos--;
-				else if(direction == 2) temp.xpos--;
-				else if(direction == 3) temp.ypos++;
+				if(direction == RIGHT) temp.xpos++;
+				else if(direction == DOWN) temp.ypos--;
+				else if(direction == LEFT) temp.xpos--;
+				else if(direction == UP) temp.ypos++;
 			}
 			else{
 				temp.xpos = temp.last.xpos;
@@ -182,18 +187,18 @@ class SnakeObj{
 
 		while(temp != null){ // sets direction to false if it would cause the snake to eat itself
 
-			if(x == temp.xpos - 1 && y == temp.ypos) dirs[0] = false;
-			if(x == temp.xpos + 1 && y == temp.ypos) dirs[2] = false;
-			if(y == temp.ypos + 1 && x == temp.xpos) dirs[1] = false;
-			if(y == temp.ypos - 1 && x == temp.xpos) dirs[3] = false;
+			if(x == temp.xpos - 1 && y == temp.ypos) dirs[RIGHT] = false;
+			if(x == temp.xpos + 1 && y == temp.ypos) dirs[LEFT] = false;
+			if(y == temp.ypos + 1 && x == temp.xpos) dirs[DOWN] = false;
+			if(y == temp.ypos - 1 && x == temp.xpos) dirs[UP] = false;
 			temp = temp.next;
 			if(temp == check) temp = temp.next;
 		}
 		//sets direction to false if it would go off the board
-		if(x == 9) dirs[0] = false;
-		if(x == 0) dirs[2] = false;
-		if(y == 9) dirs[3] = false;
-		if(y == 0) dirs[1] = false;
+		if(x == 9) dirs[RIGHT] = false;
+		if(x == 0) dirs[LEFT] = false;
+		if(y == 9) dirs[UP] = false;
+		if(y == 0) dirs[DOWN] = false;
 
 		return dirs;
 	}
@@ -211,56 +216,56 @@ class SnakeObj{
 				incrementChecker = 0;
 		int[] dirChecks = {0,0,0,0};
 
-		if(hx > apple[0]) xTowardApple = 2;
-		else if(hx< apple[0]) xTowardApple = 0;
-		if(hy > apple[1]) yTowardApple = 1;
-		else if(hy < apple[1]) yTowardApple = 3;
+		if(hx > apple[0]) xTowardApple = LEFT;
+		else if(hx< apple[0]) xTowardApple = RIGHT;
+		if(hy > apple[1]) yTowardApple = DOWN;
+		else if(hy < apple[1]) yTowardApple = UP;
 
 		while(temp != null){//assign value to indicators that crashes are more likely to happen
 			if(temp.xpos > hx){
-				dirChecks[2]--;
-				if(abs(temp.ypos - hy) < 7){dirChecks[0]++;}
-				if(temp.xpos - hx > 7 ){dirChecks[0]-=2;}
+				dirChecks[LEFT]--;
+				if(abs(temp.ypos - hy) < 7){dirChecks[RIGHT]++;}
+				if(temp.xpos - hx > 7 ){dirChecks[RIGHT]-=2;}
 			}
 			else if(hx > temp.xpos){
-				dirChecks[0]--;
-				if(abs(temp.ypos - hy) < 7) {dirChecks[2]++;}
-				if(hx - temp.xpos > 7) {dirChecks[2]-=2;}
+				dirChecks[RIGHT]--;
+				if(abs(temp.ypos - hy) < 7) {dirChecks[LEFT]++;}
+				if(hx - temp.xpos > 7) {dirChecks[LEFT]-=2;}
 			}
-			else {dirChecks[2]--; dirChecks[0]--;}
+			else {dirChecks[LEFT]--; dirChecks[RIGHT]--;}
 			if(temp.ypos > hy){
-				dirChecks[1]--;
-				if(abs(temp.xpos - hx) < 7){dirChecks[3]++;}
-				if (temp.ypos - hy > 7) {dirChecks[3]-=2;}
+				dirChecks[DOWN]--;
+				if(abs(temp.xpos - hx) < 7){dirChecks[UP]++;}
+				if (temp.ypos - hy > 7) {dirChecks[UP]-=2;}
 			}
 			else if (hy > temp.ypos){
-				dirChecks[3]--;
-				if(abs(temp.xpos - hx) < 7){dirChecks[1]++;}
-				if(hy - temp.ypos > 7){dirChecks[1]-=2;}
+				dirChecks[UP]--;
+				if(abs(temp.xpos - hx) < 7){dirChecks[DOWN]++;}
+				if(hy - temp.ypos > 7){dirChecks[DOWN]-=2;}
 			}
-			else {dirChecks[3]--; dirChecks[1]--;}
+			else {dirChecks[UP]--; dirChecks[DOWN]--;}
 			temp = temp.next;
 		}
 
 		//add a little paranoia about the sides if the apple isn't there
-		if(apple[0] < 9 && head.xpos > 7) dirChecks[0] += (segments*1.25);
-		else if(apple[0] < 8 && head.xpos > 6) dirChecks[0] += (segments*.66);
-		else if (apple[0] > 0 && head.xpos < 2) dirChecks[2] += (segments*1.25);
-		else if (apple[0] > 1 && head.xpos < 3) dirChecks[2] += (segments*.66);
-		if(apple[1] < 9 && head.ypos > 7) dirChecks[3] += (segments*1.25);
-		else if(apple[1] < 8 && head.ypos > 6) dirChecks[3] += (segments*.66);
-		else if(apple[1] > 0 && head.ypos < 2) dirChecks[1] += (segments*1.25);
-		else if(apple[1] > 1 && head.ypos < 3) dirChecks[1] += (segments*.66);
+		if(apple[0] < 9 && head.xpos > 7) dirChecks[RIGHT] += (segments*1.25);
+		else if(apple[0] < 8 && head.xpos > 6) dirChecks[RIGHT] += (segments*.66);
+		else if (apple[0] > 0 && head.xpos < 2) dirChecks[LEFT] += (segments*1.25);
+		else if (apple[0] > 1 && head.xpos < 3) dirChecks[LEFT] += (segments*.66);
+		if(apple[1] < 9 && head.ypos > 7) dirChecks[UP] += (segments*1.25);
+		else if(apple[1] < 8 && head.ypos > 6) dirChecks[UP] += (segments*.66);
+		else if(apple[1] > 0 && head.ypos < 2) dirChecks[DOWN] += (segments*1.25);
+		else if(apple[1] > 1 && head.ypos < 3) dirChecks[DOWN] += (segments*.66);
 
 		//set preferred direction based on which way the apple is and relative number of snake segments
 		for(int i = 0; i < 4; i++){
 			if(dirChecks[i] < incrementChecker){incrementChecker = dirChecks[i];}
 		}
 		while(prefDir == -1) {
-			if (xTowardApple == 2 && dirChecks[2] <= incrementChecker) prefDir = 2;
-			else if (xTowardApple == 0 && dirChecks[0] <= incrementChecker) prefDir = 0;
-			else if (yTowardApple == 1 && dirChecks[1] <= incrementChecker) prefDir = 1;
-			else if (yTowardApple == 3 && dirChecks[3] <= incrementChecker) prefDir = 3;
+			if (xTowardApple == LEFT && dirChecks[LEFT] <= incrementChecker) prefDir = LEFT;
+			else if (xTowardApple == RIGHT && dirChecks[RIGHT] <= incrementChecker) prefDir = RIGHT;
+			else if (yTowardApple == DOWN && dirChecks[DOWN] <= incrementChecker) prefDir = DOWN;
+			else if (yTowardApple == UP && dirChecks[UP] <= incrementChecker) prefDir = UP;
 			incrementChecker++;
 		}
 		if(numMoves < 15) {incrementChecker = 0;}
@@ -277,7 +282,7 @@ class SnakeObj{
 		if(!set) {
 			for (int i = 0; i < 4; i++) {
 				if(dirs[i]){prefDir = i; set = true;}
-				else if(i == 3 && !set){
+				else if(i == UP && !set){
 					System.out.println("Error: Navigation Impossible");
 					System.exit(segments);
 				}
